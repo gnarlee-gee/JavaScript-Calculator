@@ -1,7 +1,10 @@
+
+// Globals
 const mathExp = [];
+let input = '';
 
 
-
+// notes
 // document.querySelector('.calc-display').innerHTML = 'this';
 // document.querySelector('.calc-display').innerHTML = 'that';
 
@@ -16,3 +19,14 @@ const mathExp = [];
 // function test(){
 //     input = '';
 // }
+
+
+window.onload = function(){
+    addBtnEvents()
+}
+
+function addBtnEvents() {
+    for(let i = 0; i < 9; i++){
+        document.querySelector(`#btn-${i}`).addEventListener
+    }
+}

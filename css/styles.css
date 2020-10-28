@@ -39,7 +39,7 @@
 }
 
 .btn:active {
-    border: 1px solid #dbdbdb;
+    border: 2px solid #dbdbdb;
 }
 
 #btn-equal {
