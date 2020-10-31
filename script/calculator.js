@@ -3,42 +3,96 @@ const mathExp = [];
 let input = '';
 
 
-// notes
-// document.querySelector('.calc-display').innerHTML = 'this';
-// document.querySelector('.calc-display').innerHTML = 'that';
+
+function parseExpression(currentDisplay, operator) {
+    // console.log(currentDis1+play, operator);
+    let expression = currentDisplay.innerHTML;
+    console.log(expression);
+}
+
+function addition() {
+
+}
+
+function subtraction() {
+
+}
+
+function multiplication() {
+
+}
+
+function division() {
+
+}
 
 
-// let input = '';
-// console.log(input);
-// input += '3';
-// input += 4;
-// console.log(input);
-// test();
-// console.log(input);
-// function test(){
-//     input = '';
-// }
 
 
 window.onload = function () {
     let display = document.querySelector('.calc-display');
     let currentDisplay = document.querySelector('.current-text');
     display.innerHTML = '0'
-    addBtnEvents(display);
-    addKeyEvents(display, currentDisplay);
+    clickEvents(display, currentDisplay);
+    keyboardEvents(display, currentDisplay);
 }
 
-function addBtnEvents(display) {
+function clickEvents(display, currentDisplay) {
+    let decimalPresent = false;
+    let operator = '';
+
+
     for (let i = 0; i < 10; i++) {
         document.querySelector(`#btn-${i}`).addEventListener('click', function (event) {
             if (display.innerHTML.length === 1 && display.innerHTML === '0') display.innerHTML = `${i}`;
             else display.innerHTML += `${i}`
         })
     }
+    document.querySelector('#btn-period').addEventListener('click', function (event) {
+        if (!decimalPresent) {
+            display.innerHTML += '.';
+            decimalPresent = true;
+        } else {
+            console.log('Error!')
+        }
+    })
+    document.querySelector('#btn-multi').addEventListener('click', function (event) {
+        if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined || currentDisplay.innerHTML[currentDisplay.innerHTML.length - 2] == '*') {
+            currentDisplay.innerHTML += display.innerHTML + ' * ';
+            display.innerHTML = '0';
+            decimalPresent = false;
+            operator = 'multiply';
+        }
+    })
+    document.querySelector('#btn-add').addEventListener('click', function (event) {
+        if (currentDisplay.innerHTML[currentDispLength - 1] == undefined) {
+            currentDisplay = display.innerHTML + ' + ';
+            display.innerHTML = '0';
+            decimalPresent = false;
+            operator = 'add';
+        }
+    })
+    document.querySelector('#btn-sub').addEventListener('click', function (event) {
+        if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined) {
+            currentDisplay.innerHTML = display.innerHTML + ' - ';
+            display.innerHTML = '0';
+            decimalPresent = false;
+            operator = 'subtract';
+        }
+    })
+    document.querySelector('#btn-divide').addEventListener('click', function (event) {
+        if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined) {
+            currentDisplay.innerHTML = display.innerHTML + ' ÷ ';
+            display.innerHTML = '0';
+            decimalPresent = false;
+            operator = 'subtract';
+        }
+    })
 }
 
-function addKeyEvents(display, currentDisplay) {
+function keyboardEvents(display, currentDisplay) {
     let decimalPresent = false;
+    let operator = '';
     window.addEventListener('keyup', event => {
         event.preventDefault();
         switch (event.key) {
@@ -94,6 +148,7 @@ function addKeyEvents(display, currentDisplay) {
                     currentDisplay.innerHTML = display.innerHTML + ' * ';
                     display.innerHTML = '0';
                     decimalPresent = false;
+                    operator = 'multiply';
                 }
                 break;
             case '+':
@@ -101,6 +156,7 @@ function addKeyEvents(display, currentDisplay) {
                     currentDisplay.innerHTML = display.innerHTML + ' + ';
                     display.innerHTML = '0';
                     decimalPresent = false;
+                    operator = 'add';
                 }
                 break;
             case '-':
@@ -108,10 +164,15 @@ function addKeyEvents(display, currentDisplay) {
                     currentDisplay.innerHTML = display.innerHTML + ' - ';
                     display.innerHTML = '0';
                     decimalPresent = false;
+                    operator = 'subtract';
+
                 }
                 break;
             case 'Enter':
-                console.log('Enter');
+                // console.log('Enter');
+                currentDisplay.innerHTML += display.innerHTML + ' = ';
+                display.innerHTML = '';
+                parseExpression(currentDisplay, operator);
                 break;
             case 'Backspace':
                 console.log('backspace')
@@ -121,9 +182,10 @@ function addKeyEvents(display, currentDisplay) {
         if (event.key === '/') {
             event.preventDefault();
             if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined) {
-                currentDisplay.innerHTML = display.innerHTML + ' / ';
+                currentDisplay.innerHTML = display.innerHTML + ' ÷ ';
                 display.innerHTML = '0';
                 decimalPresent = false;
+                operator = 'divide';
             }
         }
     })
