@@ -58,33 +58,28 @@ function clickEvents(display, currentDisplay) {
     document.querySelector('#btn-multi').addEventListener('click', () => {
         if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined 
             || mathOperators.includes(currentDisplay.innerHTML[currentDisplay.innerHTML.length - 2])) {
-            currentDisplay.innerHTML += display.innerHTML + ' * ';
-            display.innerHTML = '0';
+            display.innerHTML += ' * ';
             decimalPresent = false;
-            operator = 'multiply';
         }
     })
     document.querySelector('#btn-add').addEventListener('click', () => {
         if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined
             || mathOperators.includes(currentDisplay.innerHTML[currentDisplay.innerHTML.length - 2])) {
-            currentDisplay.innerHTML += display.innerHTML + ' + ';
-            display.innerHTML = '0';
+                display.innerHTML += ' + ';
             decimalPresent = false;
         }
     })
     document.querySelector('#btn-sub').addEventListener('click', () => {
         if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined
             || mathOperators.includes(currentDisplay.innerHTML[currentDisplay.innerHTML.length - 2])) {
-            currentDisplay.innerHTML += display.innerHTML + ' - ';
-            display.innerHTML = '0';
+                display.innerHTML += ' - ';
             decimalPresent = false;
         }
     })
     document.querySelector('#btn-divide').addEventListener('click', () => {
         if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined
             || mathOperators.includes(currentDisplay.innerHTML[currentDisplay.innerHTML.length - 2])) {
-            currentDisplay.innerHTML += display.innerHTML + ' ÷ ';
-            display.innerHTML = '0';
+                display.innerHTML += ' ÷ ';
             decimalPresent = false;
         }
     })
@@ -147,24 +142,21 @@ function keyboardEvents(display, currentDisplay) {
             case '*':
                 if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined
                     || mathOperators.includes(currentDisplay.innerHTML[currentDisplay.innerHTML.length - 2])) {
-                    currentDisplay.innerHTML += display.innerHTML + ' * ';
-                    display.innerHTML = '0';
+                    display.innerHTML += ' * ';
                     decimalPresent = false;
                 }
                 break;
             case '+':
                 if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined
                     || mathOperators.includes(currentDisplay.innerHTML[currentDisplay.innerHTML.length - 2])) {
-                    currentDisplay.innerHTML += display.innerHTML + ' + ';
-                    display.innerHTML = '0';
+                    display.innerHTML += ' + ';
                     decimalPresent = false;
                 }
                 break;
             case '-':
                 if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined
                     || mathOperators.includes(currentDisplay.innerHTML[currentDisplay.innerHTML.length - 2])) {
-                    currentDisplay.innerHTML += display.innerHTML + ' - ';
-                    display.innerHTML = '0';
+                    display.innerHTML += ' - ';
                     decimalPresent = false;
                 }
                 break;
@@ -183,8 +175,7 @@ function keyboardEvents(display, currentDisplay) {
             event.preventDefault();
             if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined
                 || mathOperators.includes(currentDisplay.innerHTML[currentDisplay.innerHTML.length - 2])) {
-                currentDisplay.innerHTML += display.innerHTML + ' ÷ ';
-                display.innerHTML = '0';
+                display.innerHTML += ' ÷ ';
                 decimalPresent = false;
             }
         }
