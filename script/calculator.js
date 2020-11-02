@@ -39,7 +39,6 @@ window.onload = () => {
 
 function clickEvents(display, currentDisplay) {
     let decimalPresent = false;
-    let mathOperators = ['*', '+', '-', '÷'];
 
     for (let i = 0; i < 10; i++) {
         document.querySelector(`#btn-${i}`).addEventListener('click', () => {
@@ -56,38 +55,49 @@ function clickEvents(display, currentDisplay) {
         }
     })
     document.querySelector('#btn-multi').addEventListener('click', () => {
-        if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined 
-            || mathOperators.includes(currentDisplay.innerHTML[currentDisplay.innerHTML.length - 2])) {
-            display.innerHTML += ' * ';
+        if (display.innerHTML[display.innerHTML.length - 1] != '*' &&
+            !['÷', '+', '-'].includes(display.innerHTML[display.innerHTML.length - 1])) {
+            display.innerHTML += '*';
             decimalPresent = false;
         }
     })
     document.querySelector('#btn-add').addEventListener('click', () => {
-        if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined
-            || mathOperators.includes(currentDisplay.innerHTML[currentDisplay.innerHTML.length - 2])) {
-                display.innerHTML += ' + ';
+        if (display.innerHTML[display.innerHTML.length - 1] != '+' &&
+            !['÷', '*', '-'].includes(display.innerHTML[display.innerHTML.length - 1])) {
+            display.innerHTML += '+';
             decimalPresent = false;
         }
     })
     document.querySelector('#btn-sub').addEventListener('click', () => {
-        if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined
-            || mathOperators.includes(currentDisplay.innerHTML[currentDisplay.innerHTML.length - 2])) {
-                display.innerHTML += ' - ';
-            decimalPresent = false;
+        if (display.innerHTML[display.innerHTML.length - 1] != '-') {
+            if (display.innerHTML[display.innerHTML.length - 1] == '+') {
+                let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 1);
+                display.innerHTML = deletedOperator + '-'
+            } else {
+                display.innerHTML += '-';
+                decimalPresent = false;
+            }
+        } else if (display.innerHTML[display.innerHTML.length - 1] == '-' &&
+        !['*', '÷'].includes(display.innerHTML[display.innerHTML.length - 2])){
+            let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 1);
+            display.innerHTML = deletedOperator + '+';
         }
     })
     document.querySelector('#btn-divide').addEventListener('click', () => {
-        if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined
-            || mathOperators.includes(currentDisplay.innerHTML[currentDisplay.innerHTML.length - 2])) {
-                display.innerHTML += ' ÷ ';
+        if (display.innerHTML[display.innerHTML.length - 1] != '÷' &&
+            !['*', '+', '-'].includes(display.innerHTML[display.innerHTML.length - 1])) {
+            display.innerHTML += '÷';
             decimalPresent = false;
         }
+    })
+    document.querySelector('#btn-equal').addEventListener('click', () => {
+        currentDisplay.innerHTML = display.innerHTML;
+        display.innerHTML = '999';
     })
 }
 
 function keyboardEvents(display, currentDisplay) {
     let decimalPresent = false;
-    let mathOperators = ['*', '+', '-', '÷'];
     window.addEventListener('keyup', event => {
         // becasue '/' key is a hotkey for firefox
         event.preventDefault();
@@ -140,30 +150,28 @@ function keyboardEvents(display, currentDisplay) {
                 }
                 break;
             case '*':
-                if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined
-                    || mathOperators.includes(currentDisplay.innerHTML[currentDisplay.innerHTML.length - 2])) {
-                    display.innerHTML += ' * ';
+                if (display.innerHTML[display.innerHTML.length - 1] != '*') {
+                    display.innerHTML += '*';
                     decimalPresent = false;
                 }
                 break;
             case '+':
-                if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined
-                    || mathOperators.includes(currentDisplay.innerHTML[currentDisplay.innerHTML.length - 2])) {
-                    display.innerHTML += ' + ';
+                if (display.innerHTML[display.innerHTML.length - 1] != '+') {
+                    display.innerHTML += '+';
                     decimalPresent = false;
                 }
                 break;
             case '-':
-                if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined
-                    || mathOperators.includes(currentDisplay.innerHTML[currentDisplay.innerHTML.length - 2])) {
-                    display.innerHTML += ' - ';
+                if (display.innerHTML[display.innerHTML.length - 1] != '-') {
+                    display.innerHTML += '-';
                     decimalPresent = false;
                 }
                 break;
             case 'Enter':
                 // console.log('Enter');
-                currentDisplay.innerHTML += display.innerHTML + ' = ';
-                display.innerHTML = '';
+                //currentDisplay.innerHTML += display.innerHTML + ' = ';
+                currentDisplay.innerHTML = display.innerHTML;
+                display.innerHTML = '999';
                 parseExpression(currentDisplay);
                 break;
             case 'Backspace':
@@ -173,9 +181,8 @@ function keyboardEvents(display, currentDisplay) {
     window.addEventListener('keydown', event => {
         if (event.key === '/') {
             event.preventDefault();
-            if (currentDisplay.innerHTML[currentDisplay.innerHTML.length - 1] == undefined
-                || mathOperators.includes(currentDisplay.innerHTML[currentDisplay.innerHTML.length - 2])) {
-                display.innerHTML += ' ÷ ';
+            if (display.innerHTML[display.innerHTML.length - 1] != '÷') {
+                display.innerHTML += '÷';
                 decimalPresent = false;
             }
         }
