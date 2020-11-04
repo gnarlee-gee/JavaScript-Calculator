@@ -2,29 +2,62 @@
 // const mathExp = [];
 // let input = '';
 
+/*
+TODO:
+Need error for case where decimal has no number (ie 3+.-2)
+Flash display window red color when try to do something wrong like 2 decimal points (ie 3.234.4 )
 
+*/
 
-function parseExpression(currentDisplay) {
-    // console.log(currentDis1+play, operator);
-    let expression = currentDisplay.innerHTML;
-    console.log(expression);
+function solveExpression(display) {
+    display = display.filter(Boolean);
+    let mathOperators = ['-', '*', '+', '÷'];
+    if (mathOperators.includes(display[display.length - 1])) return 'Incomplete';
+    if (display.length == 1) return display[0];
+    else if (display.length == 2 && display[0] == '-') return ' - ' + display[1];
+
+    let index = 0;
+    for (let item in display) {
+        if ((item == '-' && ['*', '÷'].includes(display[index - 1])) ||
+            (item == '-' && index == 0)) {
+            if (index == 0) {
+                display.shift();
+                display[0] = (Number(display[0]) * -1).toString();
+            } else {
+                display[index + 1] = (Number(display[index + 1]) * -1).toString();
+                display.splice(index, 1);
+            }
+        }
+        index++;
+    }
+    console.log(display)
+    // let multiplication = display.indexOf('*') == -1 ? 0 : 4;
+    // let division = display.indexOf('÷') == -1 ? 0 : 3;
+    // let addition = display.indexOf('+') == -1 ? 0 : 2;
+    // let subtraction =  display.indexOf('-') == -1 ? 0 : 1;
+
+    // switch(Math.max(multiplication, division, addition, subtraction)){
+
+    // }
+
+    // console.log(multiplication, division, addition, subtraction);
 }
 
-function addition() {
+// function addition() {
 
-}
+// }
 
-function subtraction() {
+// function subtraction() {
 
-}
+// }
 
-function multiplication() {
+// function multiplication() {
 
-}
+// }
 
-function division() {
+// function division() {
 
-}
+// }
 
 
 
@@ -55,44 +88,65 @@ function clickEvents(display, currentDisplay) {
         }
     })
     document.querySelector('#btn-multi').addEventListener('click', () => {
-        if (display.innerHTML[display.innerHTML.length - 1] != '*' &&
-            !['÷', '+', '-'].includes(display.innerHTML[display.innerHTML.length - 1])) {
-            display.innerHTML += '*';
+        if (display.innerHTML[display.innerHTML.length - 2] != '*' &&
+            !['÷', '+', '-'].includes(display.innerHTML[display.innerHTML.length - 2])) {
+            display.innerHTML += ' * ';
             decimalPresent = false;
         }
     })
     document.querySelector('#btn-add').addEventListener('click', () => {
-        if (display.innerHTML[display.innerHTML.length - 1] != '+' &&
-            !['÷', '*', '-'].includes(display.innerHTML[display.innerHTML.length - 1])) {
-            display.innerHTML += '+';
+        if (display.innerHTML[display.innerHTML.length - 2] != '+' &&
+            !['÷', '*', '-'].includes(display.innerHTML[display.innerHTML.length - 2])) {
+            display.innerHTML += ' + ';
             decimalPresent = false;
         }
     })
     document.querySelector('#btn-sub').addEventListener('click', () => {
-        if (display.innerHTML[display.innerHTML.length - 1] != '-') {
-            if (display.innerHTML[display.innerHTML.length - 1] == '+') {
-                let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 1);
-                display.innerHTML = deletedOperator + '-'
+        if (display.innerHTML[0] == '0') {
+            display.innerHTML = ' - ';
+        } else if (display.innerHTML[display.innerHTML.length - 2] != '-') {
+            if (display.innerHTML[display.innerHTML.length - 2] == '+') {
+                let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 2);
+                display.innerHTML = deletedOperator + ' - '
             } else {
-                display.innerHTML += '-';
+                display.innerHTML += ' - ';
                 decimalPresent = false;
             }
-        } else if (display.innerHTML[display.innerHTML.length - 1] == '-' &&
-        !['*', '÷'].includes(display.innerHTML[display.innerHTML.length - 2])){
-            let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 1);
-            display.innerHTML = deletedOperator + '+';
+        } else if (display.innerHTML[display.innerHTML.length - 2] == '-' &&
+            !['*', '÷'].includes(display.innerHTML[display.innerHTML.length - 5]) &&
+            display.innerHTML.length != 3) {
+            console.log(display.innerHTML.length)
+            let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 2);
+            display.innerHTML = deletedOperator + ' + ';
         }
     })
     document.querySelector('#btn-divide').addEventListener('click', () => {
-        if (display.innerHTML[display.innerHTML.length - 1] != '÷' &&
-            !['*', '+', '-'].includes(display.innerHTML[display.innerHTML.length - 1])) {
-            display.innerHTML += '÷';
+        if (display.innerHTML[display.innerHTML.length - 2] != '÷' &&
+            !['*', '+', '-'].includes(display.innerHTML[display.innerHTML.length - 2])) {
+            display.innerHTML += ' ÷ ';
             decimalPresent = false;
         }
     })
     document.querySelector('#btn-equal').addEventListener('click', () => {
-        currentDisplay.innerHTML = display.innerHTML;
-        display.innerHTML = '999';
+
+        let solvedExp = solveExpression(display.innerHTML.trim().split(' '));
+        if (solvedExp != 'Incomplete') {
+            currentDisplay.innerHTML = display.innerHTML;
+            display.innerHTML = solvedExp;
+        } else {
+            console.log('Create a red border to indicate error')
+        }
+    })
+    document.querySelector('#btn-del').addEventListener('click', () => {
+        if (display.innerHTML.length != 1 && display.innerHTML[display.innerHTML.length - 1] != '0') {
+            let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 2);
+            display.innerHTML = deletedOperator;
+        } else if (display.innerHTML.length == 1) {
+            display.innerHTML = '0';
+        }
+    })
+    document.querySelector('#btn-clear').addEventListener('click', () => {
+        display.innerHTML = '0';
     })
 }
 
@@ -150,40 +204,58 @@ function keyboardEvents(display, currentDisplay) {
                 }
                 break;
             case '*':
-                if (display.innerHTML[display.innerHTML.length - 1] != '*') {
+                if (display.innerHTML[display.innerHTML.length - 1] != '*' &&
+                    !['÷', '+', '-'].includes(display.innerHTML[display.innerHTML.length - 1])) {
                     display.innerHTML += '*';
                     decimalPresent = false;
                 }
                 break;
             case '+':
-                if (display.innerHTML[display.innerHTML.length - 1] != '+') {
+                if (display.innerHTML[display.innerHTML.length - 1] != '+' &&
+                    !['÷', '*', '-'].includes(display.innerHTML[display.innerHTML.length - 1])) {
                     display.innerHTML += '+';
                     decimalPresent = false;
                 }
                 break;
             case '-':
                 if (display.innerHTML[display.innerHTML.length - 1] != '-') {
-                    display.innerHTML += '-';
-                    decimalPresent = false;
+                    if (display.innerHTML[display.innerHTML.length - 1] == '+') {
+                        let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 1);
+                        display.innerHTML = deletedOperator + '-'
+                    } else {
+                        display.innerHTML += '-';
+                        decimalPresent = false;
+                    }
+                } else if (display.innerHTML[display.innerHTML.length - 1] == '-' &&
+                    !['*', '÷'].includes(display.innerHTML[display.innerHTML.length - 2])) {
+                    let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 1);
+                    display.innerHTML = deletedOperator + '+';
                 }
                 break;
             case 'Enter':
-                // console.log('Enter');
-                //currentDisplay.innerHTML += display.innerHTML + ' = ';
                 currentDisplay.innerHTML = display.innerHTML;
-                display.innerHTML = '999';
                 parseExpression(currentDisplay);
+                display.innerHTML = '999';
                 break;
-            case 'Backspace':
-                console.log('backspace')
         }
     })
     window.addEventListener('keydown', event => {
         if (event.key === '/') {
             event.preventDefault();
-            if (display.innerHTML[display.innerHTML.length - 1] != '÷') {
+            if (display.innerHTML[display.innerHTML.length - 1] != '÷' &&
+                !['*', '+', '-'].includes(display.innerHTML[display.innerHTML.length - 1])) {
                 display.innerHTML += '÷';
                 decimalPresent = false;
+            }
+        }
+    })
+    window.addEventListener('keydown', event => {
+        if (event.key === 'Backspace') {
+            if (display.innerHTML.length != 1 && display.innerHTML[display.innerHTML.length - 1] != '0') {
+                let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 1);
+                display.innerHTML = deletedOperator;
+            } else if (display.innerHTML.length == 1) {
+                display.innerHTML = '0';
             }
         }
     })

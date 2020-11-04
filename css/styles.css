@@ -35,7 +35,7 @@
 }
 
 .btn:hover {
-    background-color:   #9db2c4;
+    background-color: #9db2c4;
 }
 
 .btn:active {
@@ -51,13 +51,21 @@
 }
 
 #btn-clear {
-    width: 230px;
+    width: 170px;
     height: 30px;
     background-color: #ff6b6b;
 }
 
 #btn-clear:hover {
     background-color: #db5d5d;
+}
+
+#btn-del {
+    background-color: #fff56b;
+}
+
+#btn-del:hover {
+    background-color: #d4c85c;
 }
 
 .display {
