@@ -10,38 +10,80 @@ Flash display window red color when try to do something wrong like 2 decimal poi
 */
 
 function solveExpression(display) {
-    display = display.filter(Boolean);
+    display = display.filter(Boolean); // To remove blank ('') strings from array
     let mathOperators = ['-', '*', '+', '÷'];
     if (mathOperators.includes(display[display.length - 1])) return 'Incomplete';
     if (display.length == 1) return display[0];
     else if (display.length == 2 && display[0] == '-') return ' - ' + display[1];
 
-    let index = 0;
-    for (let item in display) {
-        if ((item == '-' && ['*', '÷'].includes(display[index - 1])) ||
+    display.forEach(function (item, index) {
+        if ((item === '-' && ['*', '÷'].includes(display[index - 1])) ||
             (item == '-' && index == 0)) {
             if (index == 0) {
                 display.shift();
                 display[0] = (Number(display[0]) * -1).toString();
+                console.log('in here')
             } else {
                 display[index + 1] = (Number(display[index + 1]) * -1).toString();
                 display.splice(index, 1);
             }
         }
-        index++;
+    })
+    // console.log(Number(display[0]) + 3)
+
+    while (display.length != 1) {
+        let multiplication = display.indexOf('*') != -1 ? 4 : 0;
+        let division = display.indexOf('÷') != -1 ? 3 : 0;
+        let addition = display.indexOf('+') != -1 ? 2 : 0;
+        let subtraction = display.indexOf('-') != -1 ? 1 : 0;
+        let multIndex = 0;
+        let leftOperand = '';
+        let rightOperand = '';
+        let result = '';
+
+        // console.log(multiplication, division, addition, subtraction)
+
+        switch (Math.max(multiplication, division, addition, subtraction)) {
+            case 4:
+                multIndex = display.indexOf('*');
+                leftOperand = display.splice(multIndex - 1, 1);
+                rightOperand = display.splice(multIndex, 1);
+                result = (Number(leftOperand) * Number(rightOperand)).toString();
+                display.splice(multIndex - 1, 0, result)
+                display.splice(multIndex, 1)
+                break;
+            case 3:
+                divIndex = display.indexOf('÷');
+                leftOperand = display.splice(divIndex - 1, 1);
+                rightOperand = display.splice(divIndex, 1);
+                result = (Number(leftOperand) / Number(rightOperand)).toString();
+                display.splice(divIndex - 1, 0, result)
+                display.splice(divIndex, 1)
+                break;
+            case 2:
+                addIndex = display.indexOf('+');
+                leftOperand = display.splice(addIndex - 1, 1);
+                rightOperand = display.splice(addIndex, 1);
+                result = (Number(leftOperand) + Number(rightOperand)).toString();
+                display.splice(addIndex - 1, 0, result)
+                display.splice(addIndex, 1)
+                break;
+            case 1:
+                subIndex = display.indexOf('-');
+                leftOperand = display.splice(subIndex - 1, 1);
+                rightOperand = display.splice(subIndex, 1);
+                result = (Number(leftOperand) - Number(rightOperand)).toString();
+                display.splice(subIndex - 1, 0, result)
+                display.splice(subIndex, 1)
+                break;
+        }
     }
     console.log(display)
-    // let multiplication = display.indexOf('*') == -1 ? 0 : 4;
-    // let division = display.indexOf('÷') == -1 ? 0 : 3;
-    // let addition = display.indexOf('+') == -1 ? 0 : 2;
-    // let subtraction =  display.indexOf('-') == -1 ? 0 : 1;
-
-    // switch(Math.max(multiplication, division, addition, subtraction)){
-
-    // }
-
-    // console.log(multiplication, division, addition, subtraction);
+    return display[0];
 }
+
+// console.log(multiplication, division, addition, subtraction);
+
 
 // function addition() {
 
@@ -72,6 +114,7 @@ window.onload = () => {
 
 function clickEvents(display, currentDisplay) {
     let decimalPresent = false;
+    let copyOfDisplay = display;
 
     for (let i = 0; i < 10; i++) {
         document.querySelector(`#btn-${i}`).addEventListener('click', () => {
@@ -92,6 +135,9 @@ function clickEvents(display, currentDisplay) {
             !['÷', '+', '-'].includes(display.innerHTML[display.innerHTML.length - 2])) {
             display.innerHTML += ' * ';
             decimalPresent = false;
+        } else if (['÷', '+', '-'].includes(display.innerHTML[display.innerHTML.length - 2]) &&
+            !['÷', '+', '-', '*'].includes(display.innerHTML[display.innerHTML.length - 5])) {
+            display.innerHTML = copyOfDisplay.innerHTML.slice(0, copyOfDisplay.innerHTML.length - 2) + ' * ';
         }
     })
     document.querySelector('#btn-add').addEventListener('click', () => {
@@ -99,6 +145,9 @@ function clickEvents(display, currentDisplay) {
             !['÷', '*', '-'].includes(display.innerHTML[display.innerHTML.length - 2])) {
             display.innerHTML += ' + ';
             decimalPresent = false;
+        } else if (['÷', '*', '-'].includes(display.innerHTML[display.innerHTML.length - 2]) &&
+            !['÷', '+', '-', '*'].includes(display.innerHTML[display.innerHTML.length - 5])) {
+            display.innerHTML = copyOfDisplay.innerHTML.slice(0, copyOfDisplay.innerHTML.length - 2) + ' + ';
         }
     })
     document.querySelector('#btn-sub').addEventListener('click', () => {
@@ -125,6 +174,9 @@ function clickEvents(display, currentDisplay) {
             !['*', '+', '-'].includes(display.innerHTML[display.innerHTML.length - 2])) {
             display.innerHTML += ' ÷ ';
             decimalPresent = false;
+        } else if (['*', '+', '-'].includes(display.innerHTML[display.innerHTML.length - 2]) &&
+            !['÷', '+', '-', '*'].includes(display.innerHTML[display.innerHTML.length - 5])) {
+            display.innerHTML = copyOfDisplay.innerHTML.slice(0, copyOfDisplay.innerHTML.length - 2) + ' ÷ ';
         }
     })
     document.querySelector('#btn-equal').addEventListener('click', () => {
