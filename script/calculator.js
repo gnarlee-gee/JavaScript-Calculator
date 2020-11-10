@@ -190,11 +190,18 @@ function clickEvents(display, currentDisplay) {
         }
     })
     document.querySelector('#btn-del').addEventListener('click', () => {
-        if (display.innerHTML.length != 1 && display.innerHTML[display.innerHTML.length - 1] != '0') {
-            let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 2);
+        if (display.innerHTML.length != 1 && display.innerHTML[display.innerHTML.length - 1] != '0' &&
+        !['÷', '+', '-', '*'].includes(display.innerHTML[display.innerHTML.length - 2])) {
+            let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 1);
             display.innerHTML = deletedOperator;
         } else if (display.innerHTML.length == 1) {
             display.innerHTML = '0';
+        } else if (['÷', '+', '-', '*'].includes(display.innerHTML[display.innerHTML.length - 2])){
+            let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 3);
+            display.innerHTML = deletedOperator;
+            if (display.innerHTML.length == 0){
+                display.innerHTML = '0';
+            }
         }
     })
     document.querySelector('#btn-clear').addEventListener('click', () => {
