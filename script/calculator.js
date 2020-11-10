@@ -180,7 +180,6 @@ function clickEvents(display, currentDisplay) {
         }
     })
     document.querySelector('#btn-equal').addEventListener('click', () => {
-
         let solvedExp = solveExpression(display.innerHTML.trim().split(' '));
         if (solvedExp != 'Incomplete') {
             currentDisplay.innerHTML = display.innerHTML;
@@ -191,15 +190,15 @@ function clickEvents(display, currentDisplay) {
     })
     document.querySelector('#btn-del').addEventListener('click', () => {
         if (display.innerHTML.length != 1 && display.innerHTML[display.innerHTML.length - 1] != '0' &&
-        !['÷', '+', '-', '*'].includes(display.innerHTML[display.innerHTML.length - 2])) {
+            !['÷', '+', '-', '*'].includes(display.innerHTML[display.innerHTML.length - 2])) {
             let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 1);
             display.innerHTML = deletedOperator;
         } else if (display.innerHTML.length == 1) {
             display.innerHTML = '0';
-        } else if (['÷', '+', '-', '*'].includes(display.innerHTML[display.innerHTML.length - 2])){
+        } else if (['÷', '+', '-', '*'].includes(display.innerHTML[display.innerHTML.length - 2])) {
             let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 3);
             display.innerHTML = deletedOperator;
-            if (display.innerHTML.length == 0){
+            if (display.innerHTML.length == 0) {
                 display.innerHTML = '0';
             }
         }
@@ -211,6 +210,7 @@ function clickEvents(display, currentDisplay) {
 
 function keyboardEvents(display, currentDisplay) {
     let decimalPresent = false;
+    let copyOfDisplay = display;
     window.addEventListener('keyup', event => {
         // becasue '/' key is a hotkey for firefox
         event.preventDefault();
@@ -263,58 +263,82 @@ function keyboardEvents(display, currentDisplay) {
                 }
                 break;
             case '*':
-                if (display.innerHTML[display.innerHTML.length - 1] != '*' &&
-                    !['÷', '+', '-'].includes(display.innerHTML[display.innerHTML.length - 1])) {
-                    display.innerHTML += '*';
+                if (display.innerHTML[display.innerHTML.length - 2] != '*' &&
+                    !['÷', '+', '-'].includes(display.innerHTML[display.innerHTML.length - 2])) {
+                    display.innerHTML += ' * ';
                     decimalPresent = false;
+                } else if (['÷', '+', '-'].includes(display.innerHTML[display.innerHTML.length - 2]) &&
+                    !['÷', '+', '-', '*'].includes(display.innerHTML[display.innerHTML.length - 5])) {
+                    display.innerHTML = copyOfDisplay.innerHTML.slice(0, copyOfDisplay.innerHTML.length - 2) + ' * ';
                 }
                 break;
             case '+':
-                if (display.innerHTML[display.innerHTML.length - 1] != '+' &&
-                    !['÷', '*', '-'].includes(display.innerHTML[display.innerHTML.length - 1])) {
-                    display.innerHTML += '+';
+                if (display.innerHTML[display.innerHTML.length - 2] != '+' &&
+                    !['÷', '*', '-'].includes(display.innerHTML[display.innerHTML.length - 2])) {
+                    display.innerHTML += ' + ';
                     decimalPresent = false;
+                } else if (['÷', '*', '-'].includes(display.innerHTML[display.innerHTML.length - 2]) &&
+                    !['÷', '+', '-', '*'].includes(display.innerHTML[display.innerHTML.length - 5])) {
+                    display.innerHTML = copyOfDisplay.innerHTML.slice(0, copyOfDisplay.innerHTML.length - 2) + ' + ';
                 }
                 break;
             case '-':
-                if (display.innerHTML[display.innerHTML.length - 1] != '-') {
-                    if (display.innerHTML[display.innerHTML.length - 1] == '+') {
-                        let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 1);
-                        display.innerHTML = deletedOperator + '-'
+                if (display.innerHTML[0] == '0') {
+                    display.innerHTML = ' - ';
+                } else if (display.innerHTML[display.innerHTML.length - 2] != '-') {
+                    if (display.innerHTML[display.innerHTML.length - 2] == '+') {
+                        let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 2);
+                        display.innerHTML = deletedOperator + ' - '
                     } else {
-                        display.innerHTML += '-';
+                        display.innerHTML += ' - ';
                         decimalPresent = false;
                     }
-                } else if (display.innerHTML[display.innerHTML.length - 1] == '-' &&
-                    !['*', '÷'].includes(display.innerHTML[display.innerHTML.length - 2])) {
-                    let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 1);
-                    display.innerHTML = deletedOperator + '+';
+                } else if (display.innerHTML[display.innerHTML.length - 2] == '-' &&
+                    !['*', '÷'].includes(display.innerHTML[display.innerHTML.length - 5]) &&
+                    display.innerHTML.length != 3) {
+                    console.log(display.innerHTML.length)
+                    let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 2);
+                    display.innerHTML = deletedOperator + ' + ';
                 }
                 break;
             case 'Enter':
-                currentDisplay.innerHTML = display.innerHTML;
-                parseExpression(currentDisplay);
-                display.innerHTML = '999';
+                let solvedExp = solveExpression(display.innerHTML.trim().split(' '));
+                if (solvedExp != 'Incomplete') {
+                    currentDisplay.innerHTML = display.innerHTML;
+                    display.innerHTML = solvedExp;
+                } else {
+                    console.log('Create a red border to indicate error')
+                }
                 break;
         }
     })
     window.addEventListener('keydown', event => {
         if (event.key === '/') {
             event.preventDefault();
-            if (display.innerHTML[display.innerHTML.length - 1] != '÷' &&
-                !['*', '+', '-'].includes(display.innerHTML[display.innerHTML.length - 1])) {
-                display.innerHTML += '÷';
+            if (display.innerHTML[display.innerHTML.length - 2] != '÷' &&
+                !['*', '+', '-'].includes(display.innerHTML[display.innerHTML.length - 2])) {
+                display.innerHTML += ' ÷ ';
                 decimalPresent = false;
+            } else if (['*', '+', '-'].includes(display.innerHTML[display.innerHTML.length - 2]) &&
+                !['÷', '+', '-', '*'].includes(display.innerHTML[display.innerHTML.length - 5])) {
+                display.innerHTML = copyOfDisplay.innerHTML.slice(0, copyOfDisplay.innerHTML.length36 - 2) + ' ÷ ';
             }
         }
     })
     window.addEventListener('keydown', event => {
         if (event.key === 'Backspace') {
-            if (display.innerHTML.length != 1 && display.innerHTML[display.innerHTML.length - 1] != '0') {
+            if (display.innerHTML.length != 1 && display.innerHTML[display.innerHTML.length - 1] != '0' &&
+                !['÷', '+', '-', '*'].includes(display.innerHTML[display.innerHTML.length - 2])) {
                 let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 1);
                 display.innerHTML = deletedOperator;
             } else if (display.innerHTML.length == 1) {
                 display.innerHTML = '0';
+            } else if (['÷', '+', '-', '*'].includes(display.innerHTML[display.innerHTML.length - 2])) {
+                let deletedOperator = display.innerHTML.slice(0, display.innerHTML.length - 3);
+                display.innerHTML = deletedOperator;
+                if (display.innerHTML.length == 0) {
+                    display.innerHTML = '0';
+                }
             }
         }
     })
